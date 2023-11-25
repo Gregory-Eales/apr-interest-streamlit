@@ -4,12 +4,12 @@ import pandas as pd
 # Function to calculate compound interest
 def calculate_interest(principal, rate, years, compounding_periods):
         # Adjusting constants for monthly compounding
-    compounding_periods = 12  # Monthly compounding
+    compounding_periods = 12 if compounding_periods == "Monthly" else 1
 
-    interest_rate = 0.06
+    interest_rate = rate
 
-    total_years = 20
-    annual_borrowing = 150_000
+    total_years = years
+    annual_borrowing = principal
 
     # Update the dataframe with the new calculations
     data_updated = {
@@ -43,10 +43,10 @@ def calculate_interest(principal, rate, years, compounding_periods):
     return df_updated, total_interest_updated, total_compounded_amount, total_borrowed
 
 # Streamlit UI components
-st.title("John's Compound Interest Calculator")
-principal = st.number_input("Loan Amount", min_value=0)
-rate = st.number_input("Annual Interest Rate (in %)", min_value=0.0, format="%.2f")
-years = st.number_input("Duration (Years)", min_value=0)
+st.title("John's Yearly Borrowing and Compound Interest Calculator")
+principal = st.number_input("Loan Amount", min_value=0, value=150000)
+rate = st.number_input("Annual Interest Rate (in %)", min_value=0.0, format="%.2f", value=6.0)
+years = st.number_input("Duration (Years)", min_value=0, value=20)
 compounding_periods = st.selectbox("Compounding Frequency", ["Annually", "Monthly"], index=1)
 
 # Convert frequency to a number
@@ -55,7 +55,11 @@ compounding_periods = 12 if compounding_periods == "Monthly" else 1
 # Button to perform calculation
 if st.button("Calculate Interest"):
     df, total_interest, total_compounded_amount, total_borrowed = calculate_interest(principal, rate / 100, years, compounding_periods)
+
+    st.write(f"Total Interest: ${format(total_interest, ',')}")
+    st.write(f"Total Compounded Amount: ${format(total_compounded_amount, ',')}")
+    st.write(f"Total Borrowed: ${format(total_borrowed, ',')}")
+
     st.write(df)
-    st.write(f"Total Interest: {total_interest}")
-    st.write(f"Total Compounded Amount: {total_compounded_amount}")
-    st.write(f"Total Borrowed: {total_borrowed}")
+    # format the numbers with commas
+    
